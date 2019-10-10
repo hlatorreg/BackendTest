@@ -37,7 +37,7 @@ dataset==1.0.2
 decorator==4.2.1
 defusedxml==0.5.0
 dill==0.2.7.1
-Django==2.2
+Django==2.2.4
 docutils==0.14
 et-xmlfile==1.0.1
 Eve==0.6.4
