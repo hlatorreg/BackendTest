@@ -11,5 +11,5 @@
 * Included a Postman collection, if you changed the port on the testing enviroment you shoud also change it on postman routes.
 * After calling Start Scrapping from postman, you should run ```python manage.py process_task``` on a shell with virtualenv.
 
-* Create user on postman (Create User endpoint) sending the following structure ```{"username": "username", "password": "password}``` as json
+* Create user on postman (Create User endpoint) sending the following structure ```{"username": "username", "password": "password}``` as json, **use whatever values you want**
 * Attach same credentials, with the same structure to the raw body of the methods", wrong credentials will throw and show an error"
