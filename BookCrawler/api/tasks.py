@@ -5,30 +5,30 @@ from bs4 import BeautifulSoup
 from api.models import Category, Book
 from urllib.parse import urlparse
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms.models import model_to_dict
 
 @background(schedule=3)
 def crawl_bookstore():
     task_config    = load_config()
     url            = task_config['TARGET']['url']
     html_table_map = task_config['MAP']
-    get_categories(url)
-    get_books(url, html_table_map)
+    crawl_categories(url)
+    crawl_books(url, html_table_map)
 
-def get_categories(url):
+def crawl_categories(url):
     url_html   = requests.get(url)
     index_soup = BeautifulSoup(url_html.content, 'html.parser')
     categories = index_soup.select('[href*="catalogue/category/books/"]')
     for c in categories:
         name = c.getText().strip()
-        name_route = c['href']
         cur_category = Category.objects.filter(name=name)
         if cur_category:
             pass
         else:
-            new_category = Category(name=name, route_name=name_route)
+            new_category = Category(name=name)
             new_category.save()
 
-def get_books(url, html_table_map):
+def crawl_books(url, html_table_map):
     counter = 1
     host = url
     while True:
@@ -85,9 +85,24 @@ def load_config():
     config.sections()
     return config
 
+def get_all_model_categories():
+    return Category.objects.all().values()
+
 def get_model_category(value):
     category = Category.objects.get(name=value)
     if category:
         return category
     else:
         return None
+
+def get_model_book_by_id(search_value):
+    try:
+        return model_to_dict(Book.objects.get(id=search_value))
+    except ObjectDoesNotExist as exc:
+        return {"error": "ID not found."}
+
+def get_model_book_by_upc(search_value):
+    try:
+        return model_to_dict(Book.objects.get(upc=search_value))
+    except ObjectDoesNotExist as exc:
+        return {"error": "UPC not found."}
