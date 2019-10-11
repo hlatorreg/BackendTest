@@ -23,7 +23,6 @@ def get_categories(url):
         name_route = c['href']
         cur_category = Category.objects.filter(name=name)
         if cur_category:
-            print('Category already exists.')
             pass
         else:
             new_category = Category(name=name, route_name=name_route)
@@ -31,20 +30,20 @@ def get_categories(url):
 
 def get_books(url, html_table_map):
     counter = 1
+    host = url
     while True:
         url_html        = requests.get(url)
         parsed_url      = urlparse(url)
-        host            = parsed_url.hostname if 'catalogue' not in parsed_url.path else parsed_url.hostname + '/catalogue'
+        current_route   = host if 'catalogue' not in parsed_url.path else host + 'catalogue/'
         soup            = BeautifulSoup(url_html.content, 'html.parser')
         this_page_books = soup.select('article.product_pod')
-        print('On: {}, Page: {}'.format(url, counter))  
         counter+=1
         for book in this_page_books:
             book_model_title         = book.select_one('h3 > a')['title']
-            book_model_thumbnail_url = book.select_one('a > img.thumbnail')['src']
+            book_model_thumbnail_url = host+book.select_one('a > img.thumbnail')['src'].replace('../','')
             book_model_price         = book.select_one('div.product_price > p.price_color').getText()
             book_model_stock         = True if book.select_one('div.product_price > p.instock').getText().strip() == 'In stock' else False
-            book_url                 = 'http://'+host+'/'+book.select_one('div.image_container > a')['href']
+            book_url                 = current_route+book.select_one('div.image_container > a')['href']
             book_page                = requests.get(book_url)
             book_soup                = BeautifulSoup(book_page.content, 'html.parser')
             book_datatable           = book_soup.select_one('article.product_page > table')
@@ -61,23 +60,21 @@ def get_books(url, html_table_map):
                     break
             try:
                 Book.objects.get(upc=book_model_upc)
-                print('Book already exits.')
             except ObjectDoesNotExist as exc:
                 book_model = Book(
-                    category_id=book_model_category_id,
-                    title=book_model_title,
-                    thumbnail_url=book_model_thumbnail_url,
-                    price=book_model_price,
-                    stock=book_model_stock,
-                    product_description=book_model_description,
-                    upc=book_model_upc
+                    category_id         = book_model_category_id,
+                    title               = book_model_title,
+                    thumbnail_url       = book_model_thumbnail_url,
+                    price               = book_model_price,
+                    stock               = book_model_stock,
+                    product_description = book_model_description,
+                    upc                 = book_model_upc
                 )
                 book_model.save()
         next_button = soup.select_one('li.next > a')
         if next_button:
-            url = 'http://'+host+'/'+next_button['href']
+            url = current_route+next_button['href']
         else:
-            print('Reached final page.')
             break
     print('Crawling done!')
 
@@ -94,4 +91,3 @@ def get_model_category(value):
         return category
     else:
         return None
-    
