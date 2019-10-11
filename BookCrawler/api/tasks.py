@@ -1,11 +1,15 @@
-from background_task import background
-import requests
 import datetime
-from bs4 import BeautifulSoup
-from api.models import Category, Book
 from urllib.parse import urlparse
+
+import requests
+from background_task import background
+from bs4 import BeautifulSoup
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
+
+from api.models import Book, Category
+
 
 @background(schedule=3)
 def crawl_bookstore():
@@ -106,3 +110,23 @@ def get_model_book_by_upc(search_value):
         return model_to_dict(Book.objects.get(upc=search_value))
     except ObjectDoesNotExist as exc:
         return {"error": "UPC not found."}
+
+def create_api_user(name, password):
+    users = list(User.objects.all().values())
+    if len(users) >= 10:
+        return 'Max user count reached'
+    elif User.objects.filter(username=name).exists():
+        return 'User already exists'
+    else:
+        user = User.objects.create_user(username=name, password=password)
+        user.save()
+        return True
+
+def is_authenticated(request):
+    import json
+    from django.contrib.auth import authenticate, login
+    login_data = json.loads(request.body.decode('utf-8'))
+    if 'username' not in login_data.keys() or 'password' not in login_data.keys():
+        return False
+    if User.objects.filter(username=login_data['username']).exists():
+        return authenticate(request, username=login_data['username'], password=login_data['password'])

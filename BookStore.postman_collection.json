@@ -28,10 +28,64 @@
 			"response": []
 		},
 		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"test\", \"password\": \"test\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/v1/user/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get Categories",
 			"request": {
-				"method": "GET",
-				"header": [],
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"test\", \"password\": \"test\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "http://localhost:8000/api/v1/categories/",
 					"protocol": "http",
@@ -52,10 +106,26 @@
 		{
 			"name": "Get Book By ID",
 			"request": {
-				"method": "GET",
-				"header": [],
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"username\": \"test\", \"password\": \"test\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://localhost:8000/api/v1/book/id/6432",
+					"raw": "http://localhost:8000/api/v1/book/id/4",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -66,7 +136,7 @@
 						"v1",
 						"book",
 						"id",
-						"6432"
+						"4"
 					]
 				}
 			},
@@ -75,8 +145,24 @@
 		{
 			"name": "Get Book By UPC",
 			"request": {
-				"method": "GET",
-				"header": [],
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"test\", \"password\": \"test\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "http://localhost:8000/api/v1/book/upc/228ba5e7577e1d49",
 					"protocol": "http",
